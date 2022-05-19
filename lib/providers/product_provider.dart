@@ -40,6 +40,10 @@ class Products with ChangeNotifier {
     // ),
   ];
 
+  final String authToken;
+
+  Products(this.authToken, this._items);
+
   List<Product> get favoriteItems {
     return _items.where((prodItem) => prodItem.isFavorite).toList();
   }
@@ -54,7 +58,7 @@ class Products with ChangeNotifier {
 
   Future<void> fetchAndSetProducts() async {
     final url = Uri.parse(
-        'https://shop-app-6f696-default-rtdb.europe-west1.firebasedatabase.app/products.json');
+        'https://shop-app-6f696-default-rtdb.europe-west1.firebasedatabase.app/products.json?auth=$authToken');
     try {
       final response = await http.get(url);
       if (json.decode(response.body) == null) {
@@ -81,7 +85,7 @@ class Products with ChangeNotifier {
 
   Future<void> addPodouct(Product product) async {
     final url = Uri.parse(
-        'https://shop-app-6f696-default-rtdb.europe-west1.firebasedatabase.app/products.json');
+        'https://shop-app-6f696-default-rtdb.europe-west1.firebasedatabase.app/products.json?auth=$authToken');
     try {
       final response = await http.post(
         url,
@@ -112,7 +116,7 @@ class Products with ChangeNotifier {
     final prodIndex = _items.indexWhere((prod) => prod.id == id);
     if (prodIndex >= 0) {
       final url = Uri.parse(
-          'https://shop-app-6f696-default-rtdb.europe-west1.firebasedatabase.app/products/$id.json');
+          'https://shop-app-6f696-default-rtdb.europe-west1.firebasedatabase.app/products/$id.json?auth=$authToken');
       await http.patch(url,
           body: json.encode({
             'title': newProduct.title,
@@ -127,7 +131,7 @@ class Products with ChangeNotifier {
 
   Future<void> deleteProduct(String id) async {
     final url = Uri.parse(
-        'https://shop-app-6f696-default-rtdb.europe-west1.firebasedatabase.app/products/$id.json');
+        'https://shop-app-6f696-default-rtdb.europe-west1.firebasedatabase.app/products/$id.json?auth=$authToken');
     final existingProductIndex = _items.indexWhere((prod) => prod.id == id);
     Product? existingProduct = _items[existingProductIndex];
     _items.removeAt(existingProductIndex);
